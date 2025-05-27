@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBM Calculator with Currency Options</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            font-weight: 600;
+        }
+        .result-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .btn-remove {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        .form-select, .form-control {
+            margin-bottom: 0;
+        }
+        .input-group-text {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h1 class="h3 mb-0 text-center">CBM Calculator with Currency Options</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Dimensions Column -->
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex align-items-center">
+                                        <i class="fas fa-ruler-combined me-2"></i>
+                                        <span>Dimensions</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="length" class="form-label">Length:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="length" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="lengthUnit" style="max-width: 80px;">
+                                                    <option value="cm">cm</option>
+                                                    <option value="m">m</option>
+                                                    <option value="in">in</option>
+                                                    <option value="ft">ft</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="width" class="form-label">Width:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="width" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="widthUnit" style="max-width: 80px;">
+                                                    <option value="cm">cm</option>
+                                                    <option value="m">m</option>
+                                                    <option value="in">in</option>
+                                                    <option value="ft">ft</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="height" class="form-label">Height:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="height" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="heightUnit" style="max-width: 80px;">
+                                                    <option value="cm">cm</option>
+                                                    <option value="m">m</option>
+                                                    <option value="in">in</option>
+                                                    <option value="ft">ft</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="quantity" class="form-label">Quantity:</label>
+                                            <input type="number" class="form-control" id="quantity" min="1" value="1">
+                                        </div>
+                                        <div class="d-grid">
+                                            <button id="addItemBtn" class="btn btn-primary">
+                                                <i class="fas fa-plus me-2"></i>Add Current Item
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex align-items-center">
+                                        <i class="fas fa-dollar-sign me-2"></i>
+                                        <span>Shipping Rate</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="rate" class="form-label">Rate per CBM:</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="rate" min="0" step="0.01" placeholder="0.00">
+                                                <select class="form-select" id="currency" style="max-width: 100px;">
+                                                    <option value="USD">USD ($)</option>
+                                                    <option value="RMB">RMB (¥)</option>
+                                                    <option value="GHC">GHC (₵)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Results Column -->
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex align-items-center">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <span>Results</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="result-box mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span>Total CBM:</span>
+                                                <span class="result-value" id="totalCBM">0.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Total Cost:</span>
+                                                <span class="result-value" id="totalCost">0.00</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button id="calculateBtn" class="btn btn-success flex-grow-1">
+                                                <i class="fas fa-calculator me-2"></i>Calculate
+                                            </button>
+                                            <button id="clearBtn" class="btn btn-danger flex-grow-1">
+                                                <i class="fas fa-trash-alt me-2"></i>Clear All
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card">
+                                    <div class="card-header d-flex align-items-center">
+                                        <i class="fas fa-list me-2"></i>
+                                        <span>Items List</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>CBM</th>
+                                                        <th>Quantity</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="itemsList">
+                                                    <!-- Items will be added here dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const lengthInput = document.getElementById('length');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const quantityInput = document.getElementById('quantity');
+            const rateInput = document.getElementById('rate');
+            const currencySelect = document.getElementById('currency');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const addItemBtn = document.getElementById('addItemBtn');
+            const totalCBMSpan = document.getElementById('totalCBM');
+            const totalCostSpan = document.getElementById('totalCost');
+            const itemsList = document.getElementById('itemsList');
+            
+            // Currency symbols
+            const currencySymbols = {
+                USD: '$',
+                RMB: '¥',
+                GHC: '₵'
+            };
+            
+            // Array to store items
+            let items = [];
+            
+            // Calculate CBM function
+            function calculateCBM() {
+                const length = parseFloat(lengthInput.value) || 0;
+                const width = parseFloat(widthInput.value) || 0;
+                const height = parseFloat(heightInput.value) || 0;
+                const quantity = parseInt(quantityInput.value) || 1;
+                
+                const lengthUnit = document.getElementById('lengthUnit').value;
+                const widthUnit = document.getElementById('widthUnit').value;
+                const heightUnit = document.getElementById('heightUnit').value;
+                
+                // Convert all dimensions to meters
+                const lengthInM = convertToMeters(length, lengthUnit);
+                const widthInM = convertToMeters(width, widthUnit);
+                const heightInM = convertToMeters(height, heightUnit);
+                
+                // Calculate CBM
+                const cbm = lengthInM * widthInM * heightInM * quantity;
+                return cbm;
+            }
+            
+            // Convert dimension to meters based on unit
+            function convertToMeters(value, unit) {
+                switch(unit) {
+                    case 'cm':
+                        return value / 100;
+                    case 'm':
+                        return value;
+                    case 'in':
+                        return value * 0.0254;
+                    case 'ft':
+                        return value * 0.3048;
+                    default:
+                        return value;
+                }
+            }
+            
+            // Add current item to the list
+            addItemBtn.addEventListener('click', function() {
+                const cbm = calculateCBM();
+                if (cbm > 0) {
+                    const quantity = parseInt(quantityInput.value) || 1;
+                    
+                    items.push({
+                        cbm: cbm,
+                        quantity: quantity
+                    });
+                    
+                    updateItemsList();
+                    calculateTotals();
+                    
+                    // Clear dimension inputs
+                    lengthInput.value = '';
+                    widthInput.value = '';
+                    heightInput.value = '';
+                    quantityInput.value = '1';
+                    
+                    // Show toast or feedback
+                    showToast('Item added successfully!');
+                }
+            });
+            
+            // Simple toast function
+            function showToast(message) {
+                // Create toast element
+                const toastDiv = document.createElement('div');
+                toastDiv.style.position = 'fixed';
+                toastDiv.style.bottom = '20px';
+                toastDiv.style.right = '20px';
+                toastDiv.style.backgroundColor = '#28a745';
+                toastDiv.style.color = 'white';
+                toastDiv.style.padding = '10px 20px';
+                toastDiv.style.borderRadius = '4px';
+                toastDiv.style.zIndex = '1050';
+                toastDiv.textContent = message;
+                
+                document.body.appendChild(toastDiv);
+                
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    document.body.removeChild(toastDiv);
+                }, 3000);
+            }
+            
+            // Update items list in table
+            function updateItemsList() {
+                itemsList.innerHTML = '';
+                
+                if (items.length === 0) {
+                    const row = document.createElement('tr');
+                    const cell = document.createElement('td');
+                    cell.colSpan = 3;
+                    cell.textContent = 'No items added yet';
+                    cell.className = 'text-center text-muted';
+                    row.appendChild(cell);
+                    itemsList.appendChild(row);
+                    return;
+                }
+                
+                items.forEach((item, index) => {
+                    const row = document.createElement('tr');
+                    
+                    const cbmCell = document.createElement('td');
+                    cbmCell.textContent = item.cbm.toFixed(6);
+                    
+                    const quantityCell = document.createElement('td');
+                    quantityCell.textContent = item.quantity;
+                    
+                    const actionCell = document.createElement('td');
+                    const removeButton = document.createElement('button');
+                    removeButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    removeButton.className = 'btn btn-sm btn-danger';
+                    
+                    removeButton.addEventListener('click', function() {
+                        items.splice(index, 1);
+                        updateItemsList();
+                        calculateTotals();
+                    });
+                    
+                    actionCell.appendChild(removeButton);
+                    
+                    row.appendChild(cbmCell);
+                    row.appendChild(quantityCell);
+                    row.appendChild(actionCell);
+                    
+                    itemsList.appendChild(row);
+                });
+            }
+            
+            // Calculate totals (CBM and cost)
+            function calculateTotals(evt) {
+                let totalCBM = 0;
+                
+                // Add CBM from items list only
+                items.forEach(item => {
+                    totalCBM += item.cbm;
+                });
+                
+                // Only add current dimensions if explicitly requested and not already in list
+                const isCalculateButtonClick = evt && evt.target && evt.target.id === 'calculateBtn';
+                if (isCalculateButtonClick) {
+                    const currentCBM = calculateCBM();
+                    if (currentCBM > 0) {
+                        totalCBM = currentCBM; // For Calculate button, show just current dimensions
+                        if (items.length > 0) {
+                            // If items exist, show total of all items
+                            totalCBM = 0;
+                            items.forEach(item => {
+                                totalCBM += item.cbm;
+                            });
+                        }
+                    }
+                }
+                
+                totalCBMSpan.textContent = totalCBM.toFixed(6) + ' m³';
+                
+                // Calculate cost
+                const rate = parseFloat(rateInput.value) || 0;
+                const currency = currencySelect.value;
+                const totalCost = totalCBM * rate;
+                
+                totalCostSpan.textContent = `${currencySymbols[currency]}${totalCost.toFixed(2)} ${currency}`;
+            }
+            
+            // Calculate button event
+            calculateBtn.addEventListener('click', function(event) {
+                calculateTotals(event);
+            });
+            
+            // Clear button event
+            clearBtn.addEventListener('click', function() {
+                lengthInput.value = '';
+                widthInput.value = '';
+                heightInput.value = '';
+                quantityInput.value = '1';
+                rateInput.value = '';
+                items = [];
+                updateItemsList();
+                calculateTotals();
+                showToast('All data cleared!');
+            });
+            
+            // Currency change event
+            currencySelect.addEventListener('change', calculateTotals);
+            
+            // Initialize the items list
+            updateItemsList();
+        });
+    </script>
+</body>
+</html>
